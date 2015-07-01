@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+	<head>
+    
+    <script type="text/javascript" src="{{ url_for('static', filename = 'jquery-1.4.2.min.js')}}")"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename = 'socket.io.min.js')}}")"></script>
+    
+    
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            namespace = '/test'; // change to an empty string to use the global namespace
+
+            // the socket.io documentation recommends sending an explicit package upon connection
+            // this is specially important when using the global namespace
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            socket.on('connect', function() {
+                socket.emit('my event', {data: 'I\'m connected!'});
+            });
+
+            // event handler for for the distances being sent from the server...
+            // distance1 is from yardstick1' sonar, and distance2 is yardstick2
+            socket.on('DistancesReceived', function(msg) {
+                
+                $('#dynamo1').html('Distance1: ' + msg.distance1 + "cm");
+                $('#progress1').val(msg.distance1);
+                $('#dynamo2').html('Distance2: ' + msg.distance2 + "cm");
+                $('#progress2').val(msg.distance2);
+                
+                $('#dynamo3').html('Distance3: ' + msg.distance3 + "cm");
+                $('#progress3').val(msg.distance3);
+                $('#dynamo4').html('Distance4: ' + msg.distance4 + "cm");
+                $('#progress4').val(msg.distance4);
+            });
+
+             $('form#disconnect').submit(function(event) {
+                socket.emit('disconnect request');
+                return false;
+            });
+        });
+    </script><meta charset="utf-8">
+		<title>SBU Sonar Demonstration</title>
+
+		<style>
+			body{
+				background-color: #990000;
+			}
+
+
+			progress[value] {
+
+				-webkit-appearance: none;
+				appearance: none;
+				width: 90%;
+				height: 67px;
+			}
+			
+			progress[value]::-webkit-progress-bar {
+				background-color: #eee;
+				border-radius: 25px;
+				box-shadow: 0 2px 5px rgba(0,0,0,0.25)
+			}
+			
+			progress[value]::-webkit-progress-value {
+  				background-color: #FF0000;
+    				border-radius: 25px; 
+    				background-size: 35px 20px, 100% 100%, 100% 100%;
+			}
+
+
+
+
+
+			.divBack{
+				background: url("{{ url_for('static', filename = 'submarine.jpg')}}");
+	        		background-repeat: no-repeat;
+				background-size: 100%;
+				width: 94%;
+	       	 		height: 800px;
+			}
+			
+			div.Content{
+				margin-left: 17em;
+				padding-top: 8em;
+			}
+			div.Center{
+				text-align: center;
+
+			}
+
+			h1.distances{
+				color:#FFFFFF;
+				background-color:#0000FF;
+				width: 12em;
+				padding-left: 1em;
+				border-radius: 1em;
+			}
+
+			button.getReading{
+				color:#000000;
+				background-color: #8585AD;
+				border-radius: 1em;
+				width: 342px;
+				height: 42px;
+				font-size: 24px;
+				
+				
+			}
+	
+
+		</style>
+
+	</head>
+	<body>
+		<div style="background-color:white;width:94%;float:left;height42px">
+	
+			<div style="height:62px;float:left;">
+				<img src="{{ url_for('static', filename = 'SBU.jpg')}}" style="height:58px;padding-top:8px;" >
+			</div>
+			<div style="height:54px;padding-top:22px;"> 
+				<span style="color:#990000;font-size:22px;padding-left:82px;padding-top:58px;"> Ultrasound Sonar Experiment </span>
+			</div> 
+		</div>
+		<div style="height:36px;width:94%;"></div>
+	
+		<div class="divBack" >
+			<div class="Content">
+				<h1 id="dynamo1" class="distances"> Distance1 </h1>
+				<progress id="progress1" max="91" value="0"></progress>
+	
+			
+		
+				<div style="height:22px;width:94%"></div>
+		
+				<h1 id="dynamo2" class="distances"> Distance2  </h1>
+		
+				
+				<progress id="progress2" max="91"  ></progress>
+				
+				
+				<div style="height:22px;width:94%"></div>
+		
+				<h1 id="dynamo3" class="distances"> Distance3  </h1>
+		
+				
+				<progress id="progress3" max="91"  ></progress>
+				
+				<div style="height:22px;width:94%"></div>
+		
+				<h1 id="dynamo4" class="distances"> Distance4  </h1>
+		
+				
+				<progress id="progress4" max="91"  ></progress>
+				
+				<div style="height:22px;width:94%"></div>
+				
+				<!--<div class="Center"><button class="getReading" type="submit"  onClick="history.go(0)">Take Another Reading</button></div>-->
+			</div>
+	
+		</div>
+
+	</body>
+</html>
+
